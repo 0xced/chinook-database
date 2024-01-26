@@ -3,11 +3,11 @@
 <#@ assembly name="System.Core"#>
 <#@ assembly name="System.Data"#>
 <#@ assembly name="System.Data.DataSetExtensions.dll"#>
-<#@ assembly name="System.Data.Linq"#>
-<#@ assembly name="EnvDTE"#>
+<#@ assembly name="/Users/0xced/.nuget/packages/netstandard-system.data.linq/1.0.1/lib/net461/Mindbox.Data.Linq.dll"#>
+<#@ assembly name="/Users/0xced/.nuget/packages/jetbrains.envdte/20230531.48.0/lib/net472/EnvDTE.dll"#>
 <#@ assembly name="System.Xml"#>
 <#@ assembly name="System.Xml.Linq"#>
-<#@ assembly name="Newtonsoft.Json"#>
+<#@ assembly name="/Users/0xced/.nuget/packages/newtonsoft.json/13.0.3/lib/net6.0/Newtonsoft.Json.dll"#>
 <#@ import namespace="System"#>
 <#@ import namespace="System.CodeDom"#>
 <#@ import namespace="System.CodeDom.Compiler"#>
@@ -28,7 +28,7 @@
 <# 
 	// Set options here
 	var options = new {
-		Path = Path.GetDirectoryName(Host.TemplateFile) + @"\..",
+		Path = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), ".."),
 		SearchPattern = "*.cs",
 	};
 
@@ -58,10 +58,25 @@
 //     List of Included Files:
 <#
 	DirectoryInfo directoryInfo = new DirectoryInfo(options.Path);
-	FileInfo[] files = directoryInfo.GetFiles(options.SearchPattern, SearchOption.AllDirectories);
-
+	//FileInfo[] files = directoryInfo.GetFiles(options.SearchPattern, SearchOption.AllDirectories);
+	string[] files = new[]
+	{
+		Path.Combine("DataSources", "ChinookDataSet.cs"),
+		Path.Combine("DataSources", "ChinookDataSet.Designer.cs"),
+		Path.Combine("DdlStrategies", "AbstractDdlStrategy.cs"),
+		Path.Combine("DdlStrategies", "Db2Strategy.cs"),
+		Path.Combine("DdlStrategies", "IDdlStrategy.cs"),
+		Path.Combine("DdlStrategies", "KeyDefinition.cs"),
+		Path.Combine("DdlStrategies", "MySqlStrategy.cs"),
+		Path.Combine("DdlStrategies", "OracleStrategy.cs"),
+		Path.Combine("DdlStrategies", "PostgreSqlStrategy.cs"),
+		Path.Combine("DdlStrategies", "SqliteStrategy.cs"),
+		Path.Combine("DdlStrategies", "SqlServerCompactStrategy.cs"),
+		Path.Combine("DdlStrategies", "SqlServerStrategy.cs"),
+		Path.Combine("Utilities", "DataSetHelper.cs"),
+	};
 	var fullnames = new List<string>();
-	foreach (FileInfo file in files)
+	foreach (FileInfo file in files.Select(f => new FileInfo(Path.Combine(directoryInfo.FullName, f))))
 	{
 		// Skip any unwanted source file.
 		if (file.Name.Contains("AssemblyInfo") || 
